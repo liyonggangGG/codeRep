@@ -1,0 +1,12 @@
+email:
+  host: smtp.qq.com
+  port: 587
+  from: 1164954451@qq.com
+  password: zhbikusfeuavbaai
+  name: tyl
+utils:
+  smsAccount: N1212062
+  smsPassword: gNOqJ3159H76cb
+  smsUrl: http://smssh1.253.com/msg/send/json
+  uploadUrl: http://192.168.10.201:18089
+  tmpFilePath: /program/tmp
