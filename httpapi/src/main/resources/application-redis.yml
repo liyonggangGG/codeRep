@@ -1,7 +1,6 @@
-#redis集群配置
 redis:
   cache:
-    clusterNodes: 192.168.10.201:7000,192.168.10.201:7001,192.168.10.201:7002,192.168.10.201:7003
+    clusterNodes: 192.168.10.109:7000,192.168.10.109:7001,192.168.10.109:7002,192.168.10.109:7003,192.168.10.109:7004,192.168.10.109:7005,192.168.10.109:7006,192.168.10.109:7007,192.168.10.109:7008,192.168.10.109:7009
     commandTimeout: 10
     expireSeconds: 120
     maxTotal: 10000
@@ -14,15 +13,14 @@ redis:
     testWhileIdle: true
     numTestsPerEvictionRun: 50
     minEvictableIdleTimeMillis: 60000
-#Spring-redis连接池,主从配置
 spring:
   redis:
-    pool: 
+    pool:
       max-active: 8
       max-wait: -1
       max-idle: 8
       min-idle: 0
     sentinel:
-      master: teamaster
-      nodes: 192.168.10.201:27000,192.168.10.201:27001,192.168.10.201:27002
-    timeout: 0 
+      master: mymaster
+      nodes: 192.168.10.109:27000,192.168.10.109:27001,192.168.10.109:27002,192.168.10.109:27003,192.168.10.109:27004
+    timeout: 0
