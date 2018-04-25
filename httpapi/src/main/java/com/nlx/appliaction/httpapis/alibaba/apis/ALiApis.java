@@ -10,9 +10,22 @@
 
 package com.nlx.appliaction.httpapis.alibaba.apis;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
+import org.junit.Test;
+import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
@@ -21,6 +34,9 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.google.common.collect.Maps;
+import com.nlx.appliaction.httpapis.alibaba.domain.RiskInformationResponse;
+import com.nlx.appliaction.httpapis.alibaba.util.HttpUtils;
 
 /**
  * @类描述 阿里api对接
@@ -84,5 +100,43 @@ public class ALiApis
             // 请求成功
         }
         return sendSmsResponse;
+    }
+    
+    /**
+     * 
+     * 阿里云个人风险信息综合和查询 接口
+     * 
+     * @return
+     * @throws Exception
+     */
+    public static RiskInformationResponse riskInformationCheck(String bankCardNo,
+        String idCard, String mobile, String name)
+        throws Exception
+    {
+        String host = "http://xsblackhit.market.alicloudapi.com";
+        String path = "/ws/black/compBQuery";
+        String method = "POST";
+        String appcode = "cc42e5c3a28b4073879f4441c7c401c5";
+        Map<String, String> headers = Maps.newHashMap();
+        // 最后在header中的格式(中间是英文空格)为Authorization:APPCODE
+        // 83359fd73fe94948385f570e3c139105
+        headers.put("Authorization", "APPCODE " + appcode);
+        // 根据API的要求，定义相对应的Content-Type
+        headers.put("Content-Type", "application/json; charset=UTF-8");
+        Map<String, String> querys = Maps.newHashMap();
+        querys.put("bankCardNo",
+            StringUtils.isEmpty(bankCardNo) ? "bankCardNo" : bankCardNo);// 银行卡号,可不选
+        querys.put("idCard", idCard);
+        querys.put("mobile", mobile);
+        querys.put("name", name);
+        querys.put("sign",
+            DigestUtils.md5Hex(
+                "6tj4u" + new SimpleDateFormat("yyyyMMdd").format(new Date())));
+        String bodys = "请输入查询参数";
+        HttpResponse response =
+            HttpUtils.doPost(host, path, method, headers, querys, bodys);
+        return JSONObject.parseObject(
+            EntityUtils.toString(response.getEntity()),
+            RiskInformationResponse.class);
     }
 }
